@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zyptonite - Crafting the Future of the Web</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+    /* ==========================================================================
+       1. CSS RESET & CORE SETUP
+       ========================================================================== */
+    :root {
+        --primary-color: #00ffff; /* Neon Cyan */
+        --secondary-color: #ff00ff; /* Neon Magenta for accents */
+        --dark-bg: #03001C;
+        --mid-bg: #100c2e;
+        --light-bg: #1a143f;
+        --text-color: #e0e0e0;
+        --glow-color: rgba(0, 255, 255, 0.75);
+        --glow-color-secondary: rgba(255, 0, 255, 0.75);
+        --font-primary: 'Orbitron', sans-serif;
+        --font-secondary: 'Rajdhani', sans-serif;
+        --border-style: 1px solid rgba(0, 255, 255, 0.3);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--dark-bg);
+        color: var(--text-color);
+        font-family: var(--font-secondary);
+        overflow: hidden; /* Prevent scrolling on main body */
+        cursor: none;
+    }
+
+    h1, h2, h3 {
+        font-family: var(--font-primary);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    p {
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+
+    a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    a:hover {
+        color: #fff;
+        text-shadow: 0 0 10px var(--glow-color);
+    }
+
+    /* ==========================================================================
+       2. ANIMATIONS & KEYFRAMES
+       ========================================================================== */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    @keyframes slideInUp {
+        from { transform: translateY(50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes textGlow {
+        0%, 100% { text-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color), 0 0 15px var(--glow-color); }
+        50% { text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color), 0 0 30px var(--glow-color-secondary); }
+    }
+
+    @keyframes borderGlow {
+        from { box-shadow: 0 0 5px var(--glow-color), inset 0 0 5px var(--glow-color); }
+        to { box-shadow: 0 0 20px var(--glow-color-secondary), inset 0 0 10px var(--glow-color-secondary); }
+    }
+    
+    @keyframes backgroundPan {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes flicker {
+        0%, 18%, 22%, 25%, 53%, 57%, 100% {
+            opacity: 1;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--primary-color), 0 0 40px var(--primary-color);
+        }
+        20%, 24%, 55% {
+            opacity: 0.6;
+            text-shadow: none;
+        }
+    }
+
+    @keyframes scanlines {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 100%; }
+    }
+
+    /* ==========================================================================
+       3. LAYOUT & CORE COMPONENTS
+       ========================================================================== */
+    
+    /* --- Preloader --- */
+    #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--dark-bg);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    
+    .loader {
+        width: 150px;
+        height: 150px;
+        border: 2px solid transparent;
+        border-top-color: var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+        position: relative;
+    }
+
+    .loader::before, .loader::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid transparent;
+    }
+    
+    .loader::before {
+        top: 10px; left: 10px; right: 10px; bottom: 10px;
+        border-top-color: var(--secondary-color);
+        animation: spin 2s linear infinite reverse;
+    }
+
+    .loader::after {
+        top: 25px; left: 25px; right: 25px; bottom: 25px;
+        border-top-color: #fff;
+        animation: spin 1s linear infinite;
+    }
+    
+    #preloader p {
+        margin-top: 20px;
+        font-family: var(--font-primary);
+        animation: flicker 2s infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* --- Particle Background --- */
+    #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    /* --- Scanlines Overlay --- */
+    .scanline-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 4px, 6px 100%;
+        animation: scanlines 20s linear infinite;
+    }
+    
+    /* --- Custom Cursor --- */
+    .cursor {
+        position: fixed;
+        z-index: 10000;
+        pointer-events: none;
+        border-radius: 50%;
+        transition: transform 0.2s, opacity 0.3s;
+        transform: translate(-50%, -50%);
+    }
+
+    .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary-color);
+        transition: transform 0.1s;
+    }
+
+    .cursor-outline {
+        width: 40px;
+        height: 40px;
+        border: 2px solid var(--primary-color);
+        opacity: 0.5;
+        transition: transform 0.2s ease-out;
+    }
+    
+    body:hover .cursor { opacity: 1; }
+    
+    .cursor-interact {
+        transform: scale(1.5) translate(-33%, -33%);
+    }
+
+    /* --- Header & Navigation --- */
+    .main-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 1.5s ease-in-out;
+        background: linear-gradient(to bottom, rgba(3, 0, 28, 0.7), transparent);
+    }
+
+    .logo img {
+        height: 50px;
+        filter: drop-shadow(0 0 5px var(--glow-color));
+        transition: filter 0.3s ease;
+    }
+    .logo img:hover {
+        filter: drop-shadow(0 0 15px var(--glow-color));
+    }
+
+    .main-nav ul {
+        list-style: none;
+        display: flex;
+    }
+
+    .main-nav li {
+        margin-left: 40px;
+    }
+
+    .main-nav a {
+        font-family: var(--font-primary);
+        font-size: 1rem;
+        text-transform: uppercase;
+        padding: 10px 0;
+        position: relative;
+    }
+
+    .main-nav a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-color);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .main-nav a:hover::after, .main-nav a.active::after {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+    
+    /* --- Homepage Hero Content --- */
+    .homepage-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 0 20px;
+    }
+    
+    .hero-text {
+        /* GSAP will animate this */
+        opacity: 0;
+    }
+
+    .hero-text h1 {
+        font-size: clamp(2.5rem, 8vw, 6rem);
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color), 0 0 40px var(--glow-color-secondary);
+        margin: 0;
+    }
+    
+    .hero-text .subtitle {
+        font-size: clamp(1rem, 3vw, 1.5rem);
+        color: var(--primary-color);
+        margin-top: 10px;
+        letter-spacing: 3px;
+        animation: flicker 3s infinite alternate 1s;
+    }
+
+
+    /* ==========================================================================
+       4. FULL SCREEN POPUP SECTIONS
+       ========================================================================== */
+    
+    .fullscreen-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(3, 0, 28, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 2000;
+        
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fullscreen-popup.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+    
+    .popup-content {
+        width: 90%;
+        max-width: 1200px;
+        height: 90%;
+        max-height: 90vh;
+        padding: 40px 60px;
+        overflow-y: auto;
+        position: relative;
+        background: var(--mid-bg);
+        border: var(--border-style);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 255, 255, 0.1);
+        
+        transform: scale(0.9);
+        transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
+    }
+    
+    .fullscreen-popup.active .popup-content {
+        transform: scale(1);
+    }
+
+    /* --- Custom Scrollbar for Popups --- */
+    .popup-content::-webkit-scrollbar {
+        width: 8px;
+    }
+    .popup-content::-webkit-scrollbar-track {
+        background: var(--dark-bg);
+    }
+    .popup-content::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color);
+        border-radius: 4px;
+        box-shadow: 0 0 5px var(--glow-color);
+    }
+
+    .close-popup-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        font-size: 24px;
+        font-family: 'Arial', sans-serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .close-popup-btn:hover {
+        background: var(--primary-color);
+        color: var(--dark-bg);
+        transform: rotate(180deg) scale(1.1);
+        box-shadow: 0 0 15px var(--glow-color);
+    }
+
+    .page-title {
+        font-size: 3rem;
+        margin-bottom: 40px;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 20px;
+        display: inline-block;
+        animation: textGlow 4s infinite;
+    }
+
+    /* ==========================================================================
+       5. SECTION-SPECIFIC STYLES
+       ========================================================================== */
+    
+    /* --- About Us Section --- */
+    #about-section .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: center;
+    }
+    
+    #about-section p {
+        margin-bottom: 20px;
+    }
+
+    .about-image {
+        width: 100%;
+        border: var(--border-style);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        animation: scaleIn 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        opacity: 0; /* Initially hidden for animation */
+    }
+    
+    .team-section {
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 1px dashed rgba(0, 255, 255, 0.3);
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+
+    .team-member {
+        background: var(--light-bg);
+        padding: 20px;
+        border: var(--border-style);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .team-member:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 20px var(--glow-color);
+    }
+
+    .team-member h3 {
+        color: var(--primary-color);
+        margin-bottom: 5px;
+    }
+    .team-member span {
+        font-style: italic;
+        color: #aaa;
+    }
+    
+    /* Utility for scroll animations */
+    .animate-on-scroll {
+        opacity: 0;
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .animate-on-scroll.is-visible {
+        opacity: 1;
+        transform: none !important;
+    }
+    .slide-up { transform: translateY(50px); }
+
+    /* --- Contact Us Section --- */
+    .contact-container {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 50px;
+    }
+    
+    .contact-info h3 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+    
+    .contact-info p {
+        margin-bottom: 25px;
+        font-size: 1rem;
+    }
+    
+    .contact-info a {
+        word-break: break-all;
+    }
+
+    .contact-form .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .contact-form .form-control {
+        width: 100%;
+        padding: 15px;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid rgba(0, 255, 255, 0.4);
+        color: #fff;
+        font-size: 1rem;
+        font-family: var(--font-secondary);
+        transition: border-color 0.3s ease;
+    }
+
+    .contact-form .form-control:focus {
+        outline: none;
+        border-bottom-color: var(--primary-color);
+    }
+
+    .contact-form .form-control:focus + .form-label,
+    .contact-form .form-control:valid + .form-label {
+        top: -20px;
+        font-size: 0.8rem;
+        color: var(--primary-color);
+    }
+
+    .contact-form .form-label {
+        position: absolute;
+        top: 15px;
+        left: 5px;
+        color: rgba(255, 255, 255, 0.5);
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit {
+        padding: 15px 40px;
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        font-family: var(--font-primary);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: color 0.4s ease-in-out;
+    }
+    
+    .btn-submit::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--primary-color);
+        z-index: -1;
+        transition: left 0.4s ease-in-out;
+    }
+
+    .btn-submit:hover {
+        color: var(--dark-bg);
+    }
+    
+    .btn-submit:hover::before {
+        left: 0;
+    }
+
+    /* ==========================================================================
+       6. RESPONSIVE DESIGN
+       ========================================================================== */
+    @media (max-width: 992px) {
+        .main-header {
+            padding: 20px;
+        }
+        .main-nav li {
+            margin-left: 20px;
+        }
+        #about-section .content-grid {
+            grid-template-columns: 1fr;
+        }
+        .contact-container {
+            grid-template-columns: 1fr;
+        }
+        .popup-content {
+            padding: 30px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        body { cursor: auto; }
+        .cursor { display: none; }
+        
+        .main-header {
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+        }
+        .logo {
+            margin-bottom: 15px;
+        }
+        .main-nav ul {
+            padding: 0;
+        }
+        .main-nav li {
+            margin: 0 10px;
+        }
+        .main-nav a {
+            font-size: 0.9rem;
+        }
+        
+        .popup-content {
+            padding: 20px;
+            width: 95%;
+            height: 95%;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+        }
+    }
+</style>
+
+</head>
+<body>
+
+<!-- ======================= PRELOADER ======================= -->
+<div id="preloader">
+    <div class="loader"></div>
+    <p>INITIALIZING ZYPTONITE INTERFACE...</p>
+</div>
+
+<!-- ======================= CUSTOM CURSOR ======================= -->
+<div class="cursor cursor-dot"></div>
+<div class="cursor cursor-outline"></div>
+
+<!-- ======================= BACKGROUND & OVERLAYS ======================= -->
+<canvas id="particle-canvas"></canvas>
+<div class="scanline-overlay"></div>
+
+<!-- ======================= MAIN HEADER ======================= -->
+<header class="main-header">
+    <div class="logo">
+        <a href="#" class="nav-link" data-target="#home-section">
+            <img src="logo.png" alt="Zyptonite Logo">
+        </a>
+    </div>
+    <nav class="main-nav">
+        <ul>
+            <li><a href="#home-section" class="nav-link" data-target="#home-section">Home</a></li>
+            <li><a href="#about-section" class="nav-link" data-target="#about-section">About Us</a></li>
+            <li><a href="#contact-section" class="nav-link" data-target="#contact-section">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- ======================= HOMEPAGE CONTENT ======================= -->
+<main class="homepage-content">
+    <div class="hero-text">
+        <h1 class="main-title">ZYPTONITE</h1>
+        <p class="subtitle">Crafting the Digital Future, One Line at a Time.</p>
+    </div>
+</main>
+
+<!-- ==========================================================================
+   FULLSCREEN POPUP SECTIONS
+   ========================================================================== -->
+
+<!-- HOME POPUP -->
+<div id="home-section" class="fullscreen-popup">
+    <div class="popup-content">
+        <button class="close-popup-btn">×</button>
+        <h2 class="page-title">Welcome to Zyptonite</h2>
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; margin: 40px auto;">
+            We are architects of the digital frontier. We don't just build websites; we engineer immersive online experiences that captivate, engage, and convert. Explore our universe.
+        </p>
+        <div style="text-align:center; margin-top: 50px;">
+            <img src="logo.png" alt="Zyptonite Logo" style="max-height: 150px; filter: drop-shadow(0 0 20px var(--glow-color));">
+        </div>
+    </div>
+</div>
+
+<!-- ABOUT US POPUP -->
+<div id="about-section" class="fullscreen-popup">
+    <div class="popup-content">
+        <button class="close-popup-btn">×</button>
+        <h2 class="page-title">Our Genesis</h2>
+        
+        <div class="animate-on-scroll slide-up">
+            <p>Zyptonite was founded by Abdullah Hashmi with a singular vision: to transcend the conventional and redefine what a website can be. We are a collective of visionary developers, avant-garde designers, and strategic thinkers dedicated to pushing the boundaries of web technology.</p>
+        </div>
+
+        <img src="cu1.png" alt="Vision of our company" class="about-image animate-on-scroll" style="margin: 40px 0;">
+
+        <div class="content-grid animate-on-scroll slide-up">
+            <div>
+                <h3>Our Philosophy</h3>
+                <p>We believe that a website is more than just code and pixels; it's the digital soul of a brand. Our process is a meticulous fusion of art and science, where cutting-edge UI/UX meets robust, scalable architecture. We obsess over every detail, from the fluidity of an animation to the efficiency of our backend code.</p>
+            </div>
+            <div>
+                <h3>Our Technology</h3>
+                <p>Our toolkit is the bleeding edge. We harness the power of modern frameworks like React and Vue.js, build powerful backends with Node.js and Python, and create breathtaking visuals with WebGL and advanced CSS. We are perpetually learning, adapting, and innovating to deliver solutions that are not just current, but future-proof.</p>
+            </div>
+        </div>
+
+        <img src="cu2.png" alt="Our team at work" class="about-image animate-on-scroll" style="margin: 40px 0;">
+        
+        <!-- TEAM SECTION REMOVED -->
+
+    </div>
+</div>
+
+<!-- CONTACT US POPUP -->
+<div id="contact-section" class="fullscreen-popup">
+    <div class="popup-content">
+        <button class="close-popup-btn">×</button>
+        <h2 class="page-title">Initiate Contact</h2>
+        <p>Ready to launch your next project into the stratosphere? Have a question about our capabilities? Send a signal. Our communication channels are open.</p>
+
+        <div class="contact-container" style="margin-top: 50px;">
+            <div class="contact-info">
+                <h3>Direct Comms</h3>
+                <p><strong>Primary Signal (Email):</strong><br><a href="mailto:hashmertech@gmail.com">hashmertech@gmail.com</a></p>
+                
+                <!-- ADDRESS REMOVED -->
+
+                <p>We believe in asynchronous communication for maximum efficiency. Drop us an email, and a project strategist will be in touch within one business cycle.</p>
+                
+                <!-- =========== DEVELOPER CREDIT - ADDED HERE =========== -->
+                <p style="margin-top: 40px; border-top: 1px dashed var(--secondary-color); padding-top: 20px; font-size: 0.9rem; color: #aaa;">
+                    Interface crafted by <a href="#" onclick="event.preventDefault();" style="color: var(--secondary-color); text-decoration: none; cursor: default;">ABDULLAH HASHMI</a>
+                </p>
+            </div>
+
+            <form class="contact-form" action="mailto:hashmertech@gmail.com" method="post" enctype="text/plain">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" class="form-control" required>
+                    <label for="name" class="form-label">Your Name / Alias</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" class="form-control" required>
+                    <label for="email" class="form-label">Your Email Address</label>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" name="message" rows="5" class="form-control" required></textarea>
+                    <label for="message" class="form-label">Your Message / Project Brief</label>
+                </div>
+                <button type="submit" class="btn-submit">Transmit Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- GSAP Library for advanced animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+<script>
+/* ==========================================================================
+   JAVASCRIPT - FUNCTIONALITY & COMPLEX INTERACTIONS
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 1. Preloader Logic ---
+    const preloader = document.getElementById('preloader');
+    window.addEventListener('load', () => {
+        // ========== FIX: REMOVED setTimeout WRAPPER FOR FASTER LOAD ==========
+        // The preloader will now start fading out as soon as the page assets are loaded.
+        preloader.style.opacity = '0';
+        preloader.style.visibility = 'hidden';
+        preloader.addEventListener('transitionend', () => preloader.remove());
+        
+        // --- 2. GSAP Hero Animation (runs after preload) ---
+        // Added a 0.5s delay to the timeline to ensure a smooth transition after the preloader starts fading.
+        const tl = gsap.timeline({ delay: 0.5 });
+        tl.to('.hero-text', { opacity: 1, duration: 0.1 })
+          .from('.main-title', {
+              y: 100,
+              opacity: 0,
+              skewY: 10,
+              duration: 1,
+              ease: 'power4.out',
+              stagger: 0.1
+          })
+          .from('.subtitle', {
+              y: 20,
+              opacity: 0,
+              duration: 0.8,
+              ease: 'power2.out'
+          }, "-=0.6");
+        // ========== END OF FIX ==========
+    });
+    
+    // --- 3. Custom Cursor Logic ---
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorOutline = document.querySelector('.cursor-outline');
+    
+    window.addEventListener('mousemove', (e) => {
+        const { clientX: x, clientY: y } = e;
+        cursorDot.style.left = `${x}px`;
+        cursorDot.style.top = `${y}px`;
+        cursorOutline.style.left = `${x}px`;
+        cursorOutline.style.top = `${y}px`;
+    });
+    
+    document.querySelectorAll('a, button, .team-member').forEach(el => {
+        el.addEventListener('mouseenter', () => cursorOutline.classList.add('cursor-interact'));
+        el.addEventListener('mouseleave', () => cursorOutline.classList.remove('cursor-interact'));
+    });
+    
+    // --- 4. Fullscreen Popup Navigation Logic ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const popups = document.querySelectorAll('.fullscreen-popup');
+    const closeButtons = document.querySelectorAll('.close-popup-btn');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('data-target');
+            const targetPopup = document.querySelector(targetId);
+
+            if (targetPopup) {
+                // Deactivate all others
+                popups.forEach(p => p.classList.remove('active'));
+                // Activate target
+                targetPopup.classList.add('active');
+            }
+        });
+    });
+
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            button.closest('.fullscreen-popup').classList.remove('active');
+        });
+    });
+    
+    // Close with escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            popups.forEach(p => p.classList.remove('active'));
+        }
+    });
+    
+    // --- 5. Contact Form Label Animation ---
+    document.querySelectorAll('.form-control').forEach(input => {
+        // Fix for pre-filled values
+        if (input.value) {
+            input.classList.add('not-empty');
+        }
+        input.addEventListener('blur', (e) => {
+            if(e.target.value) {
+                e.target.classList.add('not-empty');
+            } else {
+                e.target.classList.remove('not-empty');
+            }
+        });
+    });
+
+    // --- 6. Scroll-Triggered Animations within Popups ---
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    if (animatedElements.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1, // Trigger when 10% of the element is visible
+            root: document.querySelector('#about-section .popup-content') // observe inside the scrollable popup
+        });
+
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+    }
+
+    // --- 7. Interactive Particle Background ---
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particlesArray;
+
+    const mouse = {
+        x: null,
+        y: null,
+        radius: (canvas.height / 120) * (canvas.width / 120)
+    };
+
+    window.addEventListener('mousemove', e => {
+        mouse.x = e.x;
+        mouse.y = e.y;
+    });
+    
+    window.addEventListener('mouseout', () => {
+        mouse.x = undefined;
+        mouse.y = undefined;
+    });
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        mouse.radius = (canvas.height / 120) * (canvas.width / 120);
+        init();
+    });
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x;
+            this.y = y;
+            this.directionX = directionX;
+            this.directionY = directionY;
+            this.size = size;
+            this.color = color;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+
+        update() {
+            if (this.x > canvas.width || this.x < 0) {
+                this.directionX = -this.directionX;
+            }
+            if (this.y > canvas.height || this.y < 0) {
+                this.directionY = -this.directionY;
+            }
+            
+            // collision detection with mouse
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx*dx + dy*dy);
+            if(distance < mouse.radius + this.size){
+                if(mouse.x < this.x && this.x < canvas.width - this.size * 10){
+                    this.x += 5;
+                }
+                if(mouse.x > this.x && this.x > this.size * 10){
+                    this.x -= 5;
+                }
+                if(mouse.y < this.y && this.y < canvas.height - this.size * 10){
+                    this.y += 5;
+                }
+                if(mouse.y > this.y && this.y > this.size * 10){
+                    this.y -= 5;
+                }
+            }
+
+            this.x += this.directionX;
+            this.y += this.directionY;
+            this.draw();
+        }
+    }
+
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 2) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * 0.4) - 0.2;
+            let directionY = (Math.random() * 0.4) - 0.2;
+            let color = 'rgba(0, 255, 255, 0.5)';
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
+    }
+
+    function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+                let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                             ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                if (distance < (canvas.width/7) * (canvas.height/7)) {
+                    opacityValue = 1 - (distance/20000);
+                    ctx.strokeStyle = `rgba(0, 255, 255, ${opacityValue})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+        connect();
+    }
+
+    init();
+    animate();
+});
+</script>
+<!-- Site Developed by Abdullah Hashmi -->
+</body>
+</html>
